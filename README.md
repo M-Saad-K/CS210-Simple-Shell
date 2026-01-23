@@ -28,13 +28,13 @@ Examples:
 ├── bin
 │   └── the final binary
 ├── build
-│   ├── where intermediate .o and .d files are
+│   └── where intermediate .o and .d files are
 ├── docs
-│   ├── any useful documentation
+│   └── any useful documentation
 ├── include
 │   └── where all the .h files are
 ├── src
-│   ├── where all the .c files are
+│   └── where all the .c files are
 ├── Makefile
 └── README.md
 ```
