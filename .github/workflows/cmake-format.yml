@@ -1,4 +1,4 @@
-name: cmake-format
+name: Auto Format
 
 on:
   push:
@@ -12,6 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: make format
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Run make format
       run: make format
+      
+    - name: Commit formatting
+      uses: stefanzweifel/git-auto-commit-action@v7
+      with:
+        commit_user_name: cmake-format-bot
+        commit_message: Apply auto formatting
