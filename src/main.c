@@ -23,11 +23,13 @@ This is the SUSHI Shell - Strathclyde Unix-type SHell Implementation
 int main(int argc, char *argv[]) {
 
   char input_buffer[512]; // This is for holding the user input
-  char *tmp = "t"; // This is a temp variable, used for detecting ctrl+D when entered 
+  char *tmp =
+      "t"; // This is a temp variable, used for detecting ctrl+D when entered
 
   while (!((strcmp(input_buffer, "exit\n") == 0 || (tmp == NULL)))) {
     printf("--> ");
-    tmp = fgets(input_buffer, sizeof(input_buffer), stdin); // TODO: Check if n correct
+    tmp = fgets(input_buffer, sizeof(input_buffer),
+                stdin); // TODO: Check if n correct
 
     printf("strcmp %d\n", strcmp(input_buffer, "exit\n"));
     printf("ASCII %d\n", *input_buffer);
