@@ -1,12 +1,14 @@
 #include "../include/builtin.h"
+#include "../include/env.h"
 #include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-const int num = 2;
-const char *names[] = {"getpath", "setpath"};
-int (*funcs[])(char **) = {&getpath, &setpath};
+const int num = 3;
+const char *names[] = {"getpath", "setpath", "cd"};
+int (*funcs[])(char **) = {&getpath, &setpath, &cd};
 
 int check_builtin(char *input[INPUT_LEN]) {
   for (int i = 0; i < num; i++) {
@@ -33,4 +35,14 @@ int setpath(char *input[INPUT_LEN]) {
     return 1;
   }
   return setenv("PATH", input[1], 1);
+}
+
+int cd(char *input[INPUT_LEN]) {
+  if (!input[1]) {
+    set_home();
+    return 0;
+  }
+
+  chdir(input[1]);
+  return 0;
 }
