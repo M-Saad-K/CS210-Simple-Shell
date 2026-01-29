@@ -32,12 +32,14 @@ int get_input(char *input_buffer, char *output[INPUT_LEN]) {
   print_prompt();
   print_flashing_cursor();
   char *ret = fgets(input_buffer, INPUT_LEN, stdin);
-  remove_flashing_cursor(input_buffer);
 
   // Exit if CTR-d pressed
   if (!ret) {
+    printf("\n");
+    remove_flashing_cursor(input_buffer);
     return 0;
   }
+  remove_flashing_cursor(input_buffer);
 
   tokenize(input_buffer, output);
   // If input is empty
