@@ -10,21 +10,22 @@ void print_prompt() {
   char cwd[100];
   getcwd(cwd, 100);
 
-  printf(ANSI_GREEN "" ANSI_GREEN_BG "%s" GREEN_FG_BLUE_BG, getenv("USER"));
-  printf("" ANSI_BLUE_BG "%s" ANSI_BLUE "", cwd);
+  printf(GREEN_FG "" GREEN_BG BLACK_FG "%s", getenv("USER"));
+  printf(GREEN_FG BLUE_BG "" BLUE_BG BLACK_FG "%s" BLUE_FG BLACK_BG "",
+         cwd);
 
   fflush(stdout); // Fix for prompt not printing correctly
 }
 
 void print_flashing_cursor() {
-  printf(RED_BG_BLACK_BG BLINK "" ANSI_RED BLINK "" ANSI_RESET " ");
+  printf(RED_BG BLACK_FG BLINK "" RED_FG BLACK_BG "" RESET " ");
 }
 
 void stop_flashing_cursor(char *tokens[INPUT_LEN]) {
   printf("\33[A\33[2K\r");
   print_prompt();
 
-  printf(RED_BG_BLACK_BG "" ANSI_RED "" ANSI_RESET " ");
+  printf(RED_BG BLACK_FG "" RED_FG BLACK_BG "" RESET " ");
   if (!tokens) {
     return;
   }
