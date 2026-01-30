@@ -20,10 +20,18 @@ void print_flashing_cursor() {
   printf(RED_BG_BLACK_BG BLINK "" ANSI_RED BLINK "" ANSI_RESET " ");
 }
 
-void remove_flashing_cursor(char *input) {
+void stop_flashing_cursor(char *tokens[INPUT_LEN]) {
   printf("\33[A\33[2K\r");
   print_prompt();
-  printf(RED_BG_BLACK_BG "" ANSI_RED "" ANSI_RESET " %s", input);
+
+  printf(RED_BG_BLACK_BG "" ANSI_RED "" ANSI_RESET " ");
+  if (!tokens) {
+    return;
+  }
+  for (int i = 0; tokens[i]; i++) {
+    printf("%s ", tokens[i]);
+  }
+  printf("\n");
 
   fflush(stdout); // Fix for prompt not printing correctly
 }
@@ -36,12 +44,12 @@ int get_input(char *input_buffer, char *output[INPUT_LEN]) {
   // Exit if CTR-d pressed
   if (!ret) {
     printf("\n");
-    remove_flashing_cursor(input_buffer);
+    stop_flashing_cursor(NULL);
     return 0;
   }
-  remove_flashing_cursor(input_buffer);
 
   tokenize(input_buffer, output);
+  stop_flashing_cursor(output);
   // If input is empty
   if (!*output) {
     return 1;
