@@ -3,16 +3,15 @@
 #define BLINK "\x1b[5m"
 #define RESET "\x1b[0m"
 
-#define RED_FG "\x1b[31m"
-#define GREEN_FG "\x1b[32m"
-#define BLUE_FG "\x1b[34m"
-#define MAGENTA_FG "\x1b[35m"
+#define PURPLE_FG "\x1b[38:5:163m"
+#define ORANGE_FG "\x1b[38:5:202m"
+#define BLUE_FG "\x1b[38:5:51m"
 #define BLACK_FG "\x1b[30m"
 
-#define RED_BG "\x1b[41m"
-#define GREEN_BG "\x1b[42m"
-#define BLUE_BG "\x1b[44m"
-#define BLACK_BG "\x1b[40m"
+#define PURPLE_BG "\x1b[48:5:163m"
+#define ORANGE_BG "\x1b[48:5:202m"
+#define BLUE_BG "\x1b[48:5:51m"
+#define BLACK_BG "\x1b[49m"
 
 // Read in input from stdin
 int get_input(char *input_buffer, char *output[INPUT_LEN]);
