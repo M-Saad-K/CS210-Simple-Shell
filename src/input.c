@@ -40,7 +40,11 @@ int get_input(char *input_buffer, char *output[INPUT_LEN]) {
     return 0;
   }
   remove_flashing_cursor(input_buffer);
+  
+  // First it must be stored
+  hisStore(input_buffer, output);
 
+  // Then tokenized
   tokenize(input_buffer, output);
   // If input is empty
   if (!*output) {
@@ -64,6 +68,62 @@ int tokenize(char input[INPUT_LEN], char *output[INPUT_LEN]) {
   }
   return 1;
 }
+
+//Storing previous inputs
+int hisStore(char input[INPUT_LEN], char *output[INPUT_LEN]){
+  
+  int f = -1; //Front
+  int r = -1; //Rear
+
+  // Check input is not empty
+  if (!input) {
+    return 1;
+  }
+  
+  char* stor[20+1]; // This is the queue
+  
+  // Length of queue
+  //int length = sizeof(stor) / sizeof(stor[0]);
+  
+  // Checks if the queue is full and ensures it still holding recent methods and getting rid of old ones
+  if(r == 20){
+
+    dequeue(f);
+    enqueue(input, f, r);
+  } else{
+
+    enqueue(input, f, r);
+  }
+}
+
+//Enqueue the store array
+void dequeue(int f, int r){
+  int front = f;
+  int rear = r;
+  
+  if(!(front == -1 || front > rear)){
+    front = front+1;
+  } else {
+    // DEBUG
+    printf("Error Dequeue");
+    return;
+  }
+}
+
+void enqueue(char* stor[20+1], char input[INPUT_LEN], int f, int r){
+  int front = f;
+  int rear = r;
+  
+  if(!(rear == -1 || front > rear)){
+    rear = rear+1;
+    stor[rear] = input[INPUT_LEN];
+  } else {
+    // DEBUG
+    printf("Error Enqueue");
+    return;
+  }
+}
+
 
 int clear(char *array[INPUT_LEN]) {
   // Check array is not already empty
