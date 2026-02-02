@@ -47,7 +47,7 @@ int main(void) {
 
     clear(tokens);
   }
-  printf("\nSushi says argato!\n");
+  printf("\nSee You Later, Space Cowboy\n");
 
   // Cleaning up
   setpath(saved_path);
