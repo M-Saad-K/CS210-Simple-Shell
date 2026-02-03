@@ -1,6 +1,7 @@
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/execute.h"
+#include "../include/history.h"
 #include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,8 +42,11 @@ int main(void) {
   clear(tokens); // Clears data left over from previous run which causes errors
 
   while (get_input(input_buffer, tokens)) {
-    // print_tokens(tokens); // Uncomment for debugging
-    if (!check_builtin(tokens)) {
+
+    check_hist(tokens);
+    print_tokens(tokens); // Uncomment for debugging
+
+    if (!check_builtin(tokens) || !check_hist(tokens)) {
       run(tokens);
     }
 
@@ -54,4 +58,5 @@ int main(void) {
   setpath(saved_path);
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
+  free_hist();
 }
