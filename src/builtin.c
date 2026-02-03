@@ -1,19 +1,22 @@
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/input.h"
+#include "../include/hist.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 const int num = 3;
-const char *names[] = {"getpath", "setpath", "cd"};
+const char *names[] = {"getpath", "setpath", "cd"}; // Adding exclaimation mark
 int (*funcs[])(char **) = {&getpath, &setpath, &cd};
 
 int check_builtin(char *input[INPUT_LEN]) {
   if (!input[0]) {
     return 1;
   }
+
   for (int i = 0; i < num; i++) {
     if (!strcmp(input[0], names[i])) {
       funcs[i](input);
@@ -55,3 +58,5 @@ int cd(char *input[INPUT_LEN]) {
   }
   return 0;
 }
+
+

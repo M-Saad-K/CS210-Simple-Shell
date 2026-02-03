@@ -2,10 +2,12 @@
 #include "../include/env.h"
 #include "../include/execute.h"
 #include "../include/input.h"
+#include "../include/hist.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
+void putHist(char input_buffer[INPUT_LEN], char* token[INPUT_LEN]);
 const char *wel = "This is the SUSHI Shell - Strathclyde Unix-type SHell "
                   "Implementation \n" ANSI_MAGENTA "⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣤⣤⣤⣀⣀⠀⠀⠀⠀⠀⠀⠀\n"
                   "⠀⠀⣠⣴⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠛⠻⠿⢿⣿⣶⣤⣄⠀⠀\n"
@@ -41,16 +43,30 @@ int main(void) {
 
   while (get_input(input_buffer, tokens)) {
     // print_tokens(tokens); // Uncomment for debugging
+    putHist(input_buffer, tokens);
     if (!check_builtin(tokens)) {
       run(tokens);
     }
 
     clear(tokens);
   }
-  printf("\nSee You Later, Space Cowboy\n");
+  printf("\nSee You, Space Cowboy\n");
 
   // Cleaning up
   setpath(saved_path);
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
+}
+
+void putHist(char input_buffer[INPUT_LEN], char* token[INPUT_LEN]){
+
+  if(strcmp(token[0], "!")){
+
+    int n = *token[1];
+
+    hisAcc(n, input_buffer);
+  } else {
+
+    hisStore(input_buffer);
+  }
 }
