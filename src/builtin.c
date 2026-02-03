@@ -1,7 +1,7 @@
 #include "../include/builtin.h"
 #include "../include/env.h"
-#include "../include/input.h"
 #include "../include/hist.h"
+#include "../include/input.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,5 +58,3 @@ int cd(char *input[INPUT_LEN]) {
   }
   return 0;
 }
-
-

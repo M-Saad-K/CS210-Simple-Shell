@@ -1,13 +1,13 @@
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/execute.h"
-#include "../include/input.h"
 #include "../include/hist.h"
+#include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-void putHist(char input_buffer[INPUT_LEN], char* token[INPUT_LEN]);
+void putHist(char input_buffer[INPUT_LEN], char *token[INPUT_LEN]);
 const char *wel = "This is the SUSHI Shell - Strathclyde Unix-type SHell "
                   "Implementation \n" ANSI_MAGENTA "⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣤⣤⣤⣀⣀⠀⠀⠀⠀⠀⠀⠀\n"
                   "⠀⠀⣠⣴⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠛⠻⠿⢿⣿⣶⣤⣄⠀⠀\n"
@@ -58,9 +58,9 @@ int main(void) {
   printf("Restored path: %s\n", getenv("PATH"));
 }
 
-void putHist(char input_buffer[INPUT_LEN], char* token[INPUT_LEN]){
+void putHist(char input_buffer[INPUT_LEN], char *token[INPUT_LEN]) {
 
-  if(strcmp(token[0], "!")){
+  if (strcmp(token[0], "!")) {
 
     int n = *token[1];
 
