@@ -7,6 +7,7 @@
 
 char *history[HIST_LEN][INPUT_LEN];
 int total = 0;
+int head = 0;
 
 // returns 1 if error in parsing history command, else zero
 int check_hist(char *tokens[INPUT_LEN]) {
@@ -23,28 +24,28 @@ int check_hist(char *tokens[INPUT_LEN]) {
     // Determint history number entered
     int pos;
     if (tokens[0][1] == '!') { // If !! entered
-      pos = total;
+      pos = head;
     } else {
       char num_s[4];
       strncpy(num_s, tokens[0] + 1, 3);
       int num = atoi(num_s);
-      if (num < -total || num > total || num == 0) {
-        printf("History goes from position -%d to %d!\n", -total, total);
+
+      if (num < -total || num > total || num < -HIST_LEN || num > HIST_LEN ||
+          num == 0) {
+        printf("Invalid history number entered!"); // TODO: Improve this message
         return 1;
       }
       if (num > 0) {
-        pos = num - 1;
+        pos = (head + num - 1) % HIST_LEN;
       } else {
-        pos = total + num;
+        pos = (HIST_LEN + head + num) % HIST_LEN;
       }
     }
-    printf("Pos: %d\n", pos);
 
     // Subsitute history element into tokens input
     for (int i = 0; history[pos][i]; i++) {
       tokens[i] = history[pos][i];
     }
-
     return 0;
   }
 
@@ -52,44 +53,34 @@ int check_hist(char *tokens[INPUT_LEN]) {
   return 0;
 }
 
-int add_hist(char *input[INPUT_LEN]) {
-
-  if (total < HIST_LEN) {
-    for (int i = 0; input[i]; i++) {
-      history[total][i] = malloc((strlen(input[i]) + 1) * sizeof(char));
-      strcpy(history[total][i], input[i]);
-    }
-    total++;
-  } else {
-
-    // Move each element forward one
-    for (int i = 0; i < HIST_LEN - 1; i++) {
-      for (int j = 0; j < INPUT_LEN; j++) {
-        history[i][j] = history[i + 1][j];
-      }
-    }
-
-    // Clear last element
-    for (int i = 0; history[HIST_LEN - 1][i]; i++) {
-      free(history[HIST_LEN - 1][i]);
-      history[HIST_LEN - 1][i] = NULL;
-    }
-
-    for (int i = 0; input[i]; i++) {
-      history[HIST_LEN - 1][i] = malloc((strlen(input[i]) + 1) * sizeof(char));
-      strcpy(history[HIST_LEN - 1][i], input[i]);
-    }
+void add_hist(char *input[INPUT_LEN]) {
+  for (int i = 0; history[head][i]; i++) {
+    free(history[head][i]);
+    history[head][i] = NULL;
   }
-  return 0;
+
+  for (int i = 0; input[i]; i++) {
+    history[head][i] = malloc((strlen(input[i]) + 1) * sizeof(char));
+    strcpy(history[head][i], input[i]);
+  }
+
+  total++;
+  head = (head + 1) % HIST_LEN;
 }
 
 void print_hist() {
+  int count = 1;
   for (int i = 0; i < HIST_LEN; i++) {
-    printf("%2d: ", i + 1);
-    for (int j = 0; history[i][j]; j++) {
-      printf("%s ", history[i][j]);
+    int pos = (head + i) % HIST_LEN;
+    if (history[pos][0]) {
+      printf("%2d: ", count);
+      count++;
+
+      for (int j = 0; history[pos][j]; j++) {
+        printf("%s ", history[pos][j]);
+      }
+      printf("\n");
     }
-    printf("\n");
   }
 }
 

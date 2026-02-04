@@ -49,7 +49,6 @@ int main(void) {
         run(tokens);
       }
     }
-    print_hist();
 
     clear(tokens);
   }
@@ -59,5 +58,5 @@ int main(void) {
   setpath(saved_path);
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
-  // free_hist();
+  free_hist();
 }
