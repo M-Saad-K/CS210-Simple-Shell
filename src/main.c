@@ -37,6 +37,8 @@ int main(void) {
   getcwd(cwd, 100);
   printf("New HOME: %s\n", cwd);
 
+  load_hist();
+
   char input_buffer[INPUT_LEN]; // Buffer for user input
   char *tokens[INPUT_LEN];      // Pointers to each token in buffer
   clear(tokens); // Clears data left over from previous run which causes errors

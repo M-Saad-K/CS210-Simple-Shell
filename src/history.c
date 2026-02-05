@@ -93,10 +93,21 @@ void output_hist(FILE *stream) {
   }
 }
 
+void load_hist() {
+  char buffer[INPUT_LEN];
+  FILE *hist_file = fopen(".hist_list", "r");
+  while (fgets(buffer, INPUT_LEN, hist_file)) {
+    char *tokens[INPUT_LEN];
+    tokenize(buffer + 4, tokens); // +4 to skip the number
+    add_hist(tokens);
+  }
+  fclose(hist_file);
+}
+
 void save_hist() {
-  FILE *history_file = fopen(".hist_list", "w");
-  output_hist(history_file);
-  fclose(history_file);
+  FILE *hist_file = fopen(".hist_list", "w");
+  output_hist(hist_file);
+  fclose(hist_file);
 }
 
 void free_hist() {
