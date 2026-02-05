@@ -58,6 +58,6 @@ int cd(char *input[INPUT_LEN]) {
 }
 
 int print_history(char *input[INPUT_LEN]) {
-  print_hist();
+  output_hist(stdout);
   return 0;
 }

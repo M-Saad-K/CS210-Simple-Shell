@@ -58,5 +58,6 @@ int main(void) {
   setpath(saved_path);
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
+  save_hist();
   free_hist();
 }

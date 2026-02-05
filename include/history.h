@@ -1,8 +1,10 @@
 #include "../include/input.h"
+#include <stdio.h>
 
-#define HIST_LEN 8
+#define HIST_LEN 20
 
 int check_hist(char *input[INPUT_LEN]);
 void add_hist(char *input[INPUT_LEN]);
+void output_hist(FILE *stream);
+void save_hist();
 void free_hist();
-void print_hist();

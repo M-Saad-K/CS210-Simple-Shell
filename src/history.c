@@ -46,7 +46,6 @@ int check_hist(char *tokens[INPUT_LEN]) {
         return 1;
       }
     }
-    printf("pos: %d\n", pos);
     if (history[pos][0] == NULL) { // check the history item is not empty
       printf("Invalid history entry!\n");
       return 1;
@@ -78,20 +77,26 @@ void add_hist(char *input[INPUT_LEN]) {
   head = (head + 1) % HIST_LEN;
 }
 
-void print_hist() {
+void output_hist(FILE *stream) {
   int index = 1;
   for (int i = 0; i < HIST_LEN; i++) {
     int pos = (head + i) % HIST_LEN;
     if (history[pos][0]) {
-      printf("%2d: ", index);
+      fprintf(stream, "%2d: ", index);
       index++;
 
       for (int j = 0; history[pos][j]; j++) {
-        printf("%s ", history[pos][j]);
+        fprintf(stream, "%s ", history[pos][j]);
       }
-      printf("\n");
+      fprintf(stream, "\n");
     }
   }
+}
+
+void save_hist() {
+  FILE *history_file = fopen(".hist_list", "w");
+  output_hist(history_file);
+  fclose(history_file);
 }
 
 void free_hist() {
