@@ -96,12 +96,15 @@ void output_hist(FILE *stream) {
 void load_hist() {
   char buffer[INPUT_LEN];
   FILE *hist_file = fopen(".hist_list", "r");
-  while (fgets(buffer, INPUT_LEN, hist_file)) {
-    char *tokens[INPUT_LEN];
-    tokenize(buffer + 4, tokens); // +4 to skip the number
-    add_hist(tokens);
+  if (hist_file) { // check that .hist_list exists
+    while (fgets(buffer, INPUT_LEN, hist_file)) {
+      char *tokens[INPUT_LEN];
+      tokenize(buffer + 4, tokens); // +4 to skip the number
+      add_hist(tokens);
+      clear(tokens);
+    }
+    fclose(hist_file);
   }
-  fclose(hist_file);
 }
 
 void save_hist() {
