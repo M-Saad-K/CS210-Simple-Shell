@@ -8,7 +8,6 @@
 char *history[HIST_LEN][INPUT_LEN];
 int head = 0;
 
-// returns 1 if error in parsing history command, else zero
 int check_hist(char *tokens[INPUT_LEN]) {
   if (!tokens[0]) {
     return 1;
@@ -68,7 +67,7 @@ void add_hist(char *input[INPUT_LEN]) {
     free(history[head][i]);
     history[head][i] = NULL;
   }
-
+  // malloc space for each token in input, then copy it into history
   for (int i = 0; input[i]; i++) {
     history[head][i] = malloc((strlen(input[i]) + 1) * sizeof(char));
     strcpy(history[head][i], input[i]);
@@ -81,7 +80,7 @@ void output_hist(FILE *stream) {
   int index = 1;
   for (int i = 0; i < HIST_LEN; i++) {
     int pos = (head + i) % HIST_LEN;
-    if (history[pos][0]) {
+    if (history[pos][0]) { // if not empty then it must be the first element
       fprintf(stream, "%2d: ", index);
       index++;
 
@@ -94,11 +93,11 @@ void output_hist(FILE *stream) {
 }
 
 void load_hist() {
-  char buffer[INPUT_LEN];
+  char buffer[INPUT_LEN];  // buffer for each line to be read to from file
+  char *tokens[INPUT_LEN]; // pointers to each token in the buffer
   FILE *hist_file = fopen(".hist_list", "r");
   if (hist_file) { // check that .hist_list exists
     while (fgets(buffer, INPUT_LEN, hist_file)) {
-      char *tokens[INPUT_LEN];
       tokenize(buffer + 4, tokens); // +4 to skip the number
       add_hist(tokens);
       clear(tokens);
@@ -109,7 +108,7 @@ void load_hist() {
 
 void save_hist() {
   FILE *hist_file = fopen(".hist_list", "w");
-  output_hist(hist_file);
+  output_hist(hist_file); // print the list to the history file
   fclose(hist_file);
 }
 
