@@ -6,8 +6,7 @@
 
 const char delimiters[] = " \t\n|><&;";
 
-int get_input(char *input_buffer, char *output[INPUT_LEN]) {
-  // Formatting for prompt
+void print_prompt() {
   char cwd[100];
   getcwd(cwd, 100);
 
@@ -37,12 +36,14 @@ void stop_flashing_cursor(char *tokens[INPUT_LEN]) {
   printf("\n");
 
   fflush(stdout); // Fix for prompt not printing correctly
+}
 
 int get_input(char *input_buffer, char *output[INPUT_LEN]) {
   printf("\n"); // Can't put this in print_prompt or lines will be double spaced
   print_prompt();
   print_flashing_cursor();
   char *ret = fgets(input_buffer, INPUT_LEN, stdin);
+
   // Exit if CTR-d pressed
   if (!ret) {
     printf("\n");
@@ -72,7 +73,7 @@ int tokenize(char input[INPUT_LEN], char *output[INPUT_LEN]) {
     output[i] = token;
     token = strtok_r(input, delimiters, &input);
   }
-  return 0;
+  return 1;
 }
 
 int clear(char *array[INPUT_LEN]) {
