@@ -39,6 +39,7 @@ int main(void) {
   printf("New HOME: %s\n", cwd);
 
   load_hist();
+  load_aliases();
 
   char input_buffer[INPUT_LEN]; // Buffer for user input
   char *tokens[INPUT_LEN];      // Pointers to each token in buffer
@@ -64,5 +65,6 @@ int main(void) {
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
   save_hist();
+  save_aliases();
   free_hist();
 }

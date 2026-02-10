@@ -1,4 +1,5 @@
 #include "../include/alias.h"
+#include "../include/env.h"
 #include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,6 +44,10 @@ void add_alias(char *tokens[INPUT_LEN]) {
     printf("Alias must have name and command!\n");
     return;
   }
+  if (head_a >= ALIAS_LEN) {
+    printf("Cannot add any more aliases!\n");
+    return;
+  }
 
   aliases[head_a] = malloc(sizeof(Alias));
 
@@ -51,23 +56,43 @@ void add_alias(char *tokens[INPUT_LEN]) {
   strcpy(aliases[head_a]->name, tokens[1]);
 
   for (int i = 0; tokens[i + 2]; i++) {
-    printf("Saving: {%s}\n", tokens[i + 2]);
     aliases[head_a]->command_len++;
     aliases[head_a]->command[i] =
         malloc((strlen(tokens[i + 2]) + 1) * sizeof(char));
     strcpy(aliases[head_a]->command[i], tokens[i + 2]);
   }
 
-  printf("Saved to: {%s}\n", aliases[head_a]->command[0]);
   head_a++;
 }
 
-void output_aliases() {
+void output_aliases(FILE *stream) {
   for (int i = 0; i < head_a; i++) {
-    printf("alias %s = ", aliases[i]->name);
+    fprintf(stream, "alias %s ", aliases[i]->name);
     for (int j = 0; j < aliases[i]->command_len; j++) {
-      printf("%s ", aliases[i]->command[j]);
+      fprintf(stream, "%s ", aliases[i]->command[j]);
     }
-    printf("\n");
+    fprintf(stream, "\n");
   }
+}
+
+void load_aliases() {
+  set_home();
+  char buffer[INPUT_LEN];  // buffer for each line to be read to from file
+  char *tokens[INPUT_LEN]; // pointers to each token in the buffer
+  FILE *alias_file = fopen(".aliases", "r");
+  if (alias_file) { // check that .alias_list exists
+    while (fgets(buffer, INPUT_LEN, alias_file)) {
+      tokenize(buffer, tokens);
+      add_alias(tokens);
+      clear(tokens);
+    }
+    fclose(alias_file);
+  }
+}
+
+void save_aliases() {
+  set_home();
+  FILE *alias_file = fopen(".aliases", "w");
+  output_aliases(alias_file); // print the list to the history file
+  fclose(alias_file);
 }

@@ -67,10 +67,11 @@ int print_history(char *input[INPUT_LEN]) {
 
 int new_alias(char *input[INPUT_LEN]) {
   add_alias(input);
+  printf("Alias %s saved!\n", input[1]);
   return 0;
 }
 
 int print_aliases(char *input[INPUT_LEN]) {
-  output_aliases();
+  output_aliases(stdout);
   return 0;
 }
