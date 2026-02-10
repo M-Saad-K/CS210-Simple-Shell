@@ -39,6 +39,7 @@ void stop_flashing_cursor(char *tokens[INPUT_LEN]) {
 }
 
 int get_input(char *input_buffer, char *output[INPUT_LEN]) {
+  printf("\n"); // Can't put this in print_prompt or lines will be double spaced
   print_prompt();
   print_flashing_cursor();
   char *ret = fgets(input_buffer, INPUT_LEN, stdin);
