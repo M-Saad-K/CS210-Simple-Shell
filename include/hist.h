@@ -10,8 +10,10 @@
 
 int hisAcc();
 int hisStore(char input[INPUT_LEN]);
-void dequeue(int f, int r);
-void enqueue(char* stor[20+1], char input[INPUT_LEN], int f, int r);
+void dequeue();
+void enqueue(char input[INPUT_LEN]);
+void show();
+void putHist(char input_buffer[INPUT_LEN]);
 
 
 

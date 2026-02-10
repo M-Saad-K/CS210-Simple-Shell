@@ -1,4 +1,5 @@
 #include "../include/input.h"
+#include "../include/hist.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,7 +44,7 @@ int get_input(char *input_buffer, char *output[INPUT_LEN]) {
   
   // First it must be stored
   //hisStore(input_buffer, output);
-
+  putHist(input_buffer);
   // Then tokenized
   tokenize(input_buffer, output);
   // If input is empty 

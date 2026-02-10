@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void putHist(char input_buffer[INPUT_LEN], char* token[INPUT_LEN]);
+void putHist(char input_buffer[INPUT_LEN]);
 const char *wel = "This is the SUSHI Shell - Strathclyde Unix-type SHell "
                   "Implementation \n" ANSI_MAGENTA "⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣤⣤⣤⣀⣀⠀⠀⠀⠀⠀⠀⠀\n"
                   "⠀⠀⣠⣴⣾⣿⡿⠿⠛⠛⠛⠛⠛⠛⠛⠻⠿⢿⣿⣶⣤⣄⠀⠀\n"
@@ -43,7 +43,6 @@ int main(void) {
 
   while (get_input(input_buffer, tokens)) {
     // print_tokens(tokens); // Uncomment for debugging
-    putHist(input_buffer, tokens);
     if (!check_builtin(tokens)) {
       run(tokens);
     }
@@ -58,15 +57,4 @@ int main(void) {
   printf("Restored path: %s\n", getenv("PATH"));
 }
 
-void putHist(char input_buffer[INPUT_LEN], char* token[INPUT_LEN]){
 
-  if(strcmp(token[0], "!")){
-
-    int n = *token[1];
-
-    hisAcc(n, input_buffer);
-  } else {
-
-    hisStore(input_buffer);
-  }
-}

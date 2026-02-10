@@ -11,49 +11,47 @@
 
 
 // GLOBAL
-char* stor[20+1]; // This is the queue
-
-
-//void dequeue(int f, int r);
-//void enqueue(char* stor[20+1], char* input[INPUT_LEN], int f, int r);
-//Storing previous inputs
+char* stor[1000]; // This is the queue
+int f = 0; // front
+int r = 0; // rear
+int counter = 20; // Kepp track that queue contains 20 elements
 
 int hisAcc(int n, char input_buffer[INPUT_LEN]){
+  int i = n + (f - n) + n; 
+  
+  strcpy(input_buffer, stor[i-48]);
 
-  input_buffer = stor[20-n];
+  printf("\nAccessed memory : %s\n", stor[i-48]); // DEBUG
+  printf("Input Buffer : %s\n", input_buffer); // DEBUG
 }
 int hisStore(char input[INPUT_LEN]){
   
-  int f = -1; //Front
-  int r = -1; //Rear
-
   // Check input is not empty
   if (!input) {
     return 1;
   }
   
-  
-  // Length of queue
-  //int length = sizeof(stor) / sizeof(stor[0]);
-  
   // Checks if the queue is full and ensures it still holding recent methods and getting rid of old ones
-  if(r == 20){
+  if(r == counter){
 
-    dequeue(f, r);
-    enqueue(stor, input, f, r);
+    dequeue();
+    enqueue(input);
   } else{
 
-    enqueue(stor, input, f, r);
+    enqueue(input);
   }
+
+
+  show();
 }
 
 //Enqueue the store array
-void dequeue(int f, int r){
-  int front = f;
-  int rear = r;
+void dequeue(){
   
-  if(!(front == -1 || front > rear)){
-    front = front+1;
+  if(!(f == -1 || f > r)){
+    free(stor[f]);
+    f++; // Increment front
+    counter++; // Increment counter
   } else {
     // DEBUG
     printf("Error Dequeue");
@@ -61,13 +59,15 @@ void dequeue(int f, int r){
   }
 }
 
-void enqueue(char* stor[20+1], char input[INPUT_LEN], int f, int r){
-  int front = f;
-  int rear = r;
+void enqueue(char input[INPUT_LEN]){
   
-  if(!(rear == -1 || front > rear)){
-    rear = rear+1;
-    stor[rear] = &input[INPUT_LEN];
+  if(!(r == -1 || f > r)){
+    r++;
+
+    printf("Input: %s \n", input); // DEBUG
+
+    stor[r] = malloc(INPUT_LEN*sizeof(char));
+    strcpy(stor[r], input);
   } else {
     // DEBUG
     printf("Error Enqueue");
@@ -75,3 +75,24 @@ void enqueue(char* stor[20+1], char input[INPUT_LEN], int f, int r){
   }
 }
 
+void show(){
+  
+  printf("front = %d, rear = %d, counter = %d", f, r, counter);
+  for(int i = f; i < r; i++){
+    
+    printf("Element : %s\n", stor[i]);
+  }
+}
+
+void putHist(char input_buffer[INPUT_LEN]){
+
+  if(input_buffer[0] == '!'){
+    int n = input_buffer[1];
+    printf("\n%d\n", n); // DEBUG
+// a[b] = (a+b)
+    hisAcc(n, input_buffer);
+  } else {
+
+    hisStore(input_buffer);
+  }
+}
