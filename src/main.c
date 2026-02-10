@@ -1,6 +1,7 @@
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/execute.h"
+#include "../include/history.h"
 #include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,14 +27,16 @@ int main(void) {
   printf("%s", wel);
 
   char *saved_path[2] = {NULL, save_path()}; // stored in form of input
-  // printf("Saved path: %s\n", saved_path[1]);
+  printf("Saved path: %s\n", saved_path[1]);
 
   char cwd[100];
   getcwd(cwd, 100);
-  // printf("Old HOME: %s\n", cwd);
+  printf("Old HOME: %s\n", cwd);
   set_home();
   getcwd(cwd, 100);
-  // printf("New HOME: %s\n", cwd);
+  printf("New HOME: %s\n", cwd);
+
+  load_hist();
 
   char input_buffer[INPUT_LEN]; // Buffer for user input
   char *tokens[INPUT_LEN];      // Pointers to each token in buffer
@@ -41,8 +44,11 @@ int main(void) {
 
   while (get_input(input_buffer, tokens)) {
     // print_tokens(tokens); // Uncomment for debugging
-    if (!check_builtin(tokens)) {
-      run(tokens);
+
+    if (!check_hist(tokens)) {
+      if (!check_builtin(tokens)) {
+        run(tokens);
+      }
     }
 
     clear(tokens);
@@ -53,4 +59,6 @@ int main(void) {
   setpath(saved_path);
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
+  save_hist();
+  free_hist();
 }

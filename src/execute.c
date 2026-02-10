@@ -23,8 +23,6 @@ int run(char *input[INPUT_LEN]) {
       int n = errno; // get error number of exec function
 
       perror(input[0]);
-      printf("Error Number: %d\n", n);
-
       exit(1);
     }
 
