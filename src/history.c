@@ -1,4 +1,5 @@
 #include "../include/history.h"
+#include "../include/env.h"
 #include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,6 +94,7 @@ void output_hist(FILE *stream) {
 }
 
 void load_hist() {
+  set_home();
   char buffer[INPUT_LEN];  // buffer for each line to be read to from file
   char *tokens[INPUT_LEN]; // pointers to each token in the buffer
   FILE *hist_file = fopen(".hist_list", "r");
@@ -107,6 +109,7 @@ void load_hist() {
 }
 
 void save_hist() {
+  set_home();
   FILE *hist_file = fopen(".hist_list", "w");
   output_hist(hist_file); // print the list to the history file
   fclose(hist_file);
