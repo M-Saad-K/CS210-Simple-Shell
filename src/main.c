@@ -1,3 +1,4 @@
+#include "../include/alias.h"
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/execute.h"
@@ -44,10 +45,12 @@ int main(void) {
   clear(tokens); // Clears data left over from previous run which causes errors
 
   while (get_input(input_buffer, tokens)) {
-    // print_tokens(tokens); // Uncomment for debugging
+    while (check_alias(tokens)) { // insert all aliases
+    }
 
     if (!check_hist(tokens)) {
       if (!check_builtin(tokens)) {
+        print_tokens(tokens);
         run(tokens);
       }
     }
