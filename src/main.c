@@ -1,8 +1,8 @@
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/execute.h"
-#include "../include/input.h"
 #include "../include/hist.h"
+#include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -56,5 +56,3 @@ int main(void) {
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
 }
-
-

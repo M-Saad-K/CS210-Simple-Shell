@@ -41,13 +41,13 @@ int get_input(char *input_buffer, char *output[INPUT_LEN]) {
     return 0;
   }
   remove_flashing_cursor(input_buffer);
-  
+
   // First it must be stored
-  //hisStore(input_buffer, output);
+  // hisStore(input_buffer, output);
   putHist(input_buffer);
   // Then tokenized
   tokenize(input_buffer, output);
-  // If input is empty 
+  // If input is empty
   if (!*output) {
     return 1;
   }
@@ -55,7 +55,6 @@ int get_input(char *input_buffer, char *output[INPUT_LEN]) {
   // Exit if exit (and nothing else) inputted
   return (strcmp(output[0], "exit") || output[1]);
 }
-
 
 int tokenize(char input[INPUT_LEN], char *output[INPUT_LEN]) {
   // Check input is not empty
