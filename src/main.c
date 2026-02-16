@@ -2,6 +2,7 @@
 #include "../include/env.h"
 #include "../include/execute.h"
 #include "../include/input.h"
+#include "../include/history.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -36,14 +37,20 @@ int main(void) {
   getcwd(cwd, 100);
   printf("New HOME: %s\n", cwd);
 
+  //ready for input
   char input_buffer[INPUT_LEN]; // Buffer for user input
   char *tokens[INPUT_LEN];      // Pointers to each token in buffer
   clear(tokens); // Clears data left over from previous run which causes errors
 
   while (get_input(input_buffer, tokens)) {
-    // print_tokens(tokens); // Uncomment for debugging
-    if (!check_builtin(tokens)) {
-      run(tokens);
+    // print_tokens(tokens); // Uncomment for debuggin
+
+    //Step 1: Check command is a history one, token is array of pointers to strings, each element is a token
+    //if check_history returns 0 (false) then it has not been a history call and therefore add to history
+    if (!check_history(tokens)) {
+    	if (!check_builtin(tokens)) {
+      		run(tokens);
+    	}
     }
 
     clear(tokens);
@@ -54,4 +61,5 @@ int main(void) {
   setpath(saved_path);
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
+  free_hist();
 }
