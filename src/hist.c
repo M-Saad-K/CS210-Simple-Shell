@@ -8,7 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define QUEUE_LEN 10
+#define QUEUE_LEN 21
 
 /*! CURRENT ISSUE WITH THE CODE IS THAT IS CAN'T TAKE IN !10-!20 FOR HISTORY ACCESS
  *
@@ -33,8 +33,8 @@ int hisAcc(int n, char input_buffer[INPUT_LEN]){
   if(n == 33 && counter != 0){
 
     strcpy(input_buffer, stor[(r-1) % QUEUE_LEN]); // When !! 
-  } else if (n >= 48 && n<= 57 && counter != 0){
-    strcpy(input_buffer, stor[(f+(n-48)) % QUEUE_LEN]); // When any random point between f -> r chosen
+  } else if (n >= 0 && n<= 20 && counter != 0){
+    strcpy(input_buffer, stor[(f+(n)) % QUEUE_LEN]); // When any random point between f -> r chosen
   } else {
     printf("Invalid!\n");
   }
@@ -138,7 +138,10 @@ void show(){
 void putHist(char input_buffer[INPUT_LEN]){
 
   if(input_buffer[0] == '!'){
-    int n = input_buffer[1];
+    
+    char trans[3];
+    memcpy(trans, input_buffer, 3 * sizeof(char)); // !100
+    int n = atoi(trans);
     printf("\n%d\n", n); // DEBUG
 // a[b] = (a+b)
     hisAcc(n, input_buffer);
