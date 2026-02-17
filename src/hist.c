@@ -27,7 +27,7 @@ int hisAcc(int n, char input_buffer[INPUT_LEN]) {
   } else if (n >= 0 && n <= QUEUE_LEN && counter != 0 && stor[n] != NULL) {
     strcpy(input_buffer, stor[(f + (n)) % QUEUE_LEN]); // When any random point
                                                        // between f -> r chosen
-  } else if (n <= -1 && n >= -QUEUE_LEN && counter != 0){
+  } else if (n <= -1 && n >= -QUEUE_LEN && counter != 0) {
 
     strcpy(input_buffer, stor[(r + n) % QUEUE_LEN]);
   } else {
@@ -47,7 +47,7 @@ int hisStore(char input[INPUT_LEN]) {
 
   enqueue_dequeue(input);
 
-  //show();
+  // show();
   return 0;
 }
 
@@ -110,19 +110,18 @@ void show() {
 
   // If the queue is full
   if (f == r && counter == 1) {
-    
+
     int x = 1;
 
     for (int i = f; i < QUEUE_LEN; i++) {
-      
-     
-      //printf("F: %d, R: %d \n\n", f, r);
+
+      // printf("F: %d, R: %d \n\n", f, r);
       printf("%d : %s \n\n", x, stor[i]);
       x++;
     }
     for (int i = 0; i < r; i++) {
 
-      //printf("F: %d, R: %d \n\n", f, r);
+      // printf("F: %d, R: %d \n\n", f, r);
       printf("%d : %s \n\n", x, stor[i]);
       x++;
     }
@@ -131,20 +130,19 @@ void show() {
 
 void putHist(char input_buffer[INPUT_LEN]) {
 
-
-  if (input_buffer[0] == '!'){
+  if (input_buffer[0] == '!') {
 
     printf("1\n");
     int n;
     char mark;
     char other;
-  
-    sscanf(input_buffer, "%c%d%c\n", &mark, &n, &other);  
+
+    sscanf(input_buffer, "%c%d%c\n", &mark, &n, &other);
     printf("2\n");
     printf("mark: {%s}\n", &mark);
     printf("n: {%d}\n", n);
     printf("other: {%s}\n", &other);
-    //return; 
+    // return;
     printf("3\n");
     hisAcc(n, input_buffer);
     printf("4\n`");
@@ -152,9 +150,10 @@ void putHist(char input_buffer[INPUT_LEN]) {
   } else {
 
     hisStore(input_buffer);
-    if (!strcmp(input_buffer, "history\n")){
-          show();
-    } else {; // Do Nothing 
+    if (!strcmp(input_buffer, "history\n")) {
+      show();
+    } else {
+      ; // Do Nothing
     }
   }
 }
