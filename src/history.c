@@ -5,28 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-//declaring a struct called history
-//contains an integer for the number in history.. confused if this is the array accessor
-//contains pointer to strings- which is the tokenized input (need to malloc and then point seperatley)
-struct history {
-	int commandNo;			//the command number to be referenced (like an identity) (starts from 1)
-	char *commands[INPUT_LEN]; 	//the command line, each part of this array points to a string (token)  
-};
-
-//history commandNo start at 1 and continue indefinetly until the death of the program
-//this is the integer that the user refers to when calling their command?
-//is this what the user calls as the command number
-int globalCommand = 1;
+//array that stores all our history
+//2D array, each row represents a hist_len
+char *history[HIST_LEN][INPUT_LEN]; 	//the command line, each part of this array points to a string (token)  
 
 //the current head of the struct... ie like an index counter
-int head = 0;				//for circular array implementation
-int total = 0; 
-
-//need to declare an array of structs, intially empty and of 20 poisitons
-//history is an array of tokens, however these are stored locally
-//each position in this array is it's own struct which relates to a command
-struct history arrHistory[HIST_LEN];
-
+int head = 0;				
 
 //This method will be called when the input has been tokenised
 //it's goal is to check that a history prompt has been entered and then execute the command
@@ -47,11 +31,9 @@ int check_history(char* tokens[INPUT_LEN]){
 		}
 		
 		//at this point, the command is at least valid whether history prompt or normal command line
-		//Finaly code extraction-from github
-		//check maths working with all conditions
     		int pos;	
 		if (tokens[0][1] == '!') { // If !! entered
-      			pos = head;
+      			pos = (HIST_LEN + head -1) % HIST_LEN; 
     		} else {
 
 			//this code below generates either a positive integer or a negative, deependent on call
@@ -60,44 +42,46 @@ int check_history(char* tokens[INPUT_LEN]){
       			int num = atoi(num_s);
 			
 
-			//checks id the integer entered is valid
 			//boundary checking
-      			if (num < -total|| num > total || num < -HIST_LEN || num > HIST_LEN ||
-          		    num == 0) {
-        		printf("Invalid history number entered!"); // TODO: Improve this message
+			//need to include boundary checking for negative num as can't access negative index
+      			if (num <= -HIST_LEN || num > HIST_LEN ||num == 0) {
+        		printf("You can only call to the last 20 commands!\n"); // TODO: Improve this message
         		return 1;
       			}
-	
-			
-			//implementation...not circular yet
-			//need to make this implementation circular
-			//this maths isn't working for my array implementation
-			//boundary condition not working
+
+			//calculate the correct position
+			//issue with this maths need to fix it to work circular
+
+			//positie case
       			if (num > 0) {
-        			pos =(num - 1) % HIST_LEN; 
-      			} else {
-        			pos = (HIST_LEN + head + num) % HIST_LEN;
-      			}
+        			pos =(num - 1) % HIST_LEN;
+      			} 
+			//negative case
+			else {
+        			pos = (HIST_LEN + head + num-1) % HIST_LEN;
+      			}	
 		}
 
-		printf("pos check: %d\n", pos);
+			  printf("pos check: %d\n", pos);
+		          //ensure that this position exists in the array
+                          //this would cause an error
+                          if (!(history[pos][0])) {
+                                  printf("History call does not exits!\n");
+                                  return 1;
+                          }
+
+
 		//at this point, if the command isn't a history prompt then it will have returned to main
 		//if it is a history prompt, then the maths above has worked out the value to call
-		//this can be placed into tokens and then passed back to main
 
 		//at this point, we are ready to interpret the command after Finlay's mathematical expertise
 		// Subsitute history element into tokens input
-		//need to modify this for the tokens and struct
 		//this is making tokens[i] point the malloced strings in the corrosponding array
-
-		//array is index 0, pos however starts from 1, so have to less one when accessing the array
-    		for (int i = 0; arrHistory[pos].commands[i]; i++) {
-			tokens[i] = arrHistory[pos].commands[i];
-    		
+    		for (int i = 0; history[pos][i]; i++) {
+			tokens[i] = history[pos][i];
 		}
 		
 		//at this point now, tokens conatins the executeable history command
-		//it will either contain the 
     		return 0;
 
 	}
@@ -109,65 +93,33 @@ int check_history(char* tokens[INPUT_LEN]){
 //This method is called when no history call has been made from the command line
 void history_add(char* tokens[INPUT_LEN]) {
 
-	//reset command number for current head
-	arrHistory[head].commandNo = 0;
-
 	//if circular occurs then have to free the element leaving the array of structs	
-	for (int i; arrHistory[head].commands[i]; i++) {
-		free(arrHistory[head].commands[i]);
-		arrHistory[head].commands[i] = NULL;
+	for (int i; history[head][i]; i++) {
+		free(history[head][i]);
+		history[head][i] = NULL;
 	}
 
-
-	//need to create a strcut then add it to the correct position in the struct array
-	//returns a new struct which can then be added to the head of the array
-	//overwrites memory address of old struct with new struct
-	arrHistory[head] = create_struct(tokens);
-	
-	//current number- test
-	printf("Struct number: %d\n", arrHistory[head].commandNo);
-
-	//incrementation- does the maths deal with total... ask Finaly
-	total++; 
+	//now we have freed position, need to add the current token input to history
+         //current format- array of pointers to strings
+         //malloc new space
+         //repeat until tokens hit null
+         for (int i = 0; tokens[i]; i++) {
+                 //here, you will have a current token
+                 history[head][i] = malloc((strlen(tokens[i]) + 1) * sizeof(char));
+                 strcpy(history[head][i], tokens[i]);
+         }
 
 	//head- next available position... circular implementation
 	head = (head + 1) % HIST_LEN;
 	
 }
 
-//this method will create a struct which will then be returned to be added to the array of structs
-struct history create_struct(char* tokens[INPUT_LEN]) {
- //want to create a new position in the struct array
-          //declare new struct, fill it, add it to the history array
-          //how to know what commandNumber this struct will get
-	  //globalCommand is what the user will type in... it is incremented by 1 each time...
-	  //it is what the user will type in to the command line
-          struct history currentLine;
-	  currentLine.commandNo  = globalCommand;
-	  globalCommand++;
-
-
-	//after this, we need to add the current command line to the array of struct
-	//current format- array of pointers to strings
-	//malloc new space
-	//repeat until tokens hit null
-	for (int i = 0; tokens[i]; i++) {
-		//here, you will have a current token
-		currentLine.commands[i] = malloc((strlen(tokens[i]) + 1) * sizeof(char));
-		strcpy(currentLine.commands[i], tokens[i]);
-	}
-
-	//at this point we have a new struct, it has the correct global command number 
-	//it has the correct array of string pointers as it's variable
-	return currentLine;
-	}
-
 //frees history when an exit command has been entered to the terminal
 //gets access to the array as it's a global variable
 void free_hist() {
 	for (int i = 0; i< HIST_LEN; i++) {
-		for (int j= 0; arrHistory[i].commands[j]; j++) {
-			free(arrHistory[i].commands[j]);
+		for (int j= 0; history[i][j]; j++) {
+			free(history[i][j]);
 		}
 	}
 }
