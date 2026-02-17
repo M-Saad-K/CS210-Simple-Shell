@@ -8,35 +8,28 @@
 #include <string.h>
 #include <unistd.h>
 
-#define QUEUE_LEN 21
-
-/*! CURRENT ISSUE WITH THE CODE IS THAT IS CAN'T TAKE IN !10-!20 FOR HISTORY
- * ACCESS
- *
- *  Reasons:
- *
- *  1. putHist only takes in the MSB digit of the integer
- *  2. Boundary Check only allowed for integers between 0-9
- *  3. There are no ASCII values for 10-20
- * */
+#define QUEUE_LEN 4
 
 // GLOBAL
 char *stor[QUEUE_LEN]; // This is the queue
 int f = 0;             // front
 int r = 0;             // reari
-int counter = 0;       // Keep track that queue contains 20 elements
+int counter = 0;       // Keep tiack that queue contains 20 elements
 
 int hisAcc(int n, char input_buffer[INPUT_LEN]) {
   // int i = n + (f - n) + n;
 
   printf("Int value: %d\n", n);
 
-  if (n == 33 && counter != 0) {
+  if (n == 32767 && counter != 0) {
 
     strcpy(input_buffer, stor[(r - 1) % QUEUE_LEN]); // When !!
-  } else if (n >= 0 && n <= 20 && counter != 0) {
+  } else if (n >= 0 && n <= QUEUE_LEN && counter != 0 && stor[n] != NULL) {
     strcpy(input_buffer, stor[(f + (n)) % QUEUE_LEN]); // When any random point
                                                        // between f -> r chosen
+  } else if (n <= -1 && n >= -QUEUE_LEN && counter != 0){
+
+    strcpy(input_buffer, stor[(r + n) % QUEUE_LEN]);
   } else {
     printf("Invalid!\n");
   }
@@ -54,7 +47,7 @@ int hisStore(char input[INPUT_LEN]) {
 
   enqueue_dequeue(input);
 
-  show();
+  //show();
   return 0;
 }
 
@@ -111,40 +104,57 @@ void show() {
   if (r > f) {
 
     for (int i = 0; i < QUEUE_LEN; i++) {
-
-      printf("F: %d, R: %d \n\n", f, r);
-      printf("Element (%d) : %s : %p \n\n", i, stor[i], (void *)&stor[i]);
+      printf("%d : %s \n\n", i, stor[i]);
     }
   }
 
   // If the queue is full
   if (f == r && counter == 1) {
+    
+    int x = 1;
 
     for (int i = f; i < QUEUE_LEN; i++) {
-
-      printf("F: %d, R: %d \n\n", f, r);
-      printf("Element (%d) : %s : %p \n\n", i, stor[i], (void *)&stor[i]);
+      
+     
+      //printf("F: %d, R: %d \n\n", f, r);
+      printf("%d : %s \n\n", x, stor[i]);
+      x++;
     }
-    for (int i = 0; i < r - 1; i++) {
+    for (int i = 0; i < r; i++) {
 
-      printf("F: %d, R: %d \n\n", f, r);
-      printf("Element (%d) : %s : %p \n\n", i, stor[i], (void *)&stor[i]);
+      //printf("F: %d, R: %d \n\n", f, r);
+      printf("%d : %s \n\n", x, stor[i]);
+      x++;
     }
   }
 }
 
 void putHist(char input_buffer[INPUT_LEN]) {
 
-  if (input_buffer[0] == '!') {
 
-    char trans[3];
-    memcpy(trans, input_buffer, 3 * sizeof(char)); // !100
-    int n = atoi(trans);
-    printf("\n%d\n", n); // DEBUG
-                         // a[b] = (a+b)
+  if (input_buffer[0] == '!'){
+
+    printf("1\n");
+    int n;
+    char mark;
+    char other;
+  
+    sscanf(input_buffer, "%c%d%c\n", &mark, &n, &other);  
+    printf("2\n");
+    printf("mark: {%s}\n", &mark);
+    printf("n: {%d}\n", n);
+    printf("other: {%s}\n", &other);
+    //return; 
+    printf("3\n");
     hisAcc(n, input_buffer);
+    printf("4\n`");
+
   } else {
 
     hisStore(input_buffer);
+    if (!strcmp(input_buffer, "history\n")){
+          show();
+    } else {; // Do Nothing 
+    }
   }
 }

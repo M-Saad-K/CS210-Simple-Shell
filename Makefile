@@ -24,7 +24,7 @@ ifeq ($(release), 0)
 endif
 
 # If sanitize=1 is set, run with address sanitizer
-sanitize ?= 0
+sanitize ?= 1
 ifeq ($(sanitize), 1)
 	CFLAGS += $(ASFLAGS)
 	LDFLAGS += $(ASFLAGS)
