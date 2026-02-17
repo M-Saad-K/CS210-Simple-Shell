@@ -22,40 +22,40 @@ int check_hist(char *tokens[INPUT_LEN]) {
       return 1;
     }
 
-    // Determine index in array to load from
-    int pos;
-    if (tokens[0][1] == '!') { // If !! entered
-      pos = (HIST_LEN + head - 1) % HIST_LEN;
+    // Determine index in array to load from based on input number
+    int index;
+    if (tokens[0][1] == '!') {                  // If !! entered
+      index = (HIST_LEN + head - 1) % HIST_LEN; // Load most recent history item
     } else {
       char num_s[4];
-      strncpy(num_s, tokens[0] + 1, 3);
-      int num = atoi(num_s);
+      strncpy(num_s, tokens[0] + 1, 3); // get number after !
+      int num = atoi(num_s);            // convert number to int
 
-      if (num < -HIST_LEN || num > HIST_LEN) {
+      if (num < -HIST_LEN || num > HIST_LEN) { // If number out of range
         printf("History index must be from -%d to %d!\n", HIST_LEN, HIST_LEN);
         return 1;
       }
-      if (num > 0) {
+      if (num > 0) { // If positive number entered
         if (history[head][0]) {
-          pos = (head + num - 1) % HIST_LEN; // formula if overflow has happened
+          index = (head + num - 1) % HIST_LEN; // if overflow has happened
         } else {
-          pos = num - 1; // formula if array not overflowed
+          index = num - 1; // if array not overflowed
         }
-      } else if (num < 0) {
-        pos = (HIST_LEN + head + num) % HIST_LEN; // formula for negative index
-      } else {
+      } else if (num < 0) { // if negative number entered
+        index = (HIST_LEN + head + num) % HIST_LEN; // for negative number
+      } else {                                      // If 0 or nothing entered
         printf("0 is not a valid history index!\n");
         return 1;
       }
     }
-    if (history[pos][0] == NULL) { // check the history item is not empty
+    if (history[index][0] == NULL) { // check the history item exists
       printf("Invalid history entry!\n");
       return 1;
     }
 
-    // Subsitute history element into tokens input
-    for (int i = 0; history[pos][i]; i++) {
-      tokens[i] = history[pos][i];
+    // Subsitute chosen history element into tokens input
+    for (int i = 0; history[index][i]; i++) {
+      tokens[i] = history[index][i];
     }
     return 0;
   }
@@ -76,18 +76,20 @@ void add_hist(char *input[INPUT_LEN]) {
     strcpy(history[head][i], input[i]);
   }
 
+  // Move head forwards
   head = (head + 1) % HIST_LEN;
 }
 
 void output_hist(FILE *stream) {
-  int index = 1;
+  int index = 1; // for printing the command number
   for (int i = 0; i < HIST_LEN; i++) {
     int pos = (head + i) % HIST_LEN;
     if (history[pos][0]) { // if not empty then it must be the first element
       fprintf(stream, "%2d: ", index);
       index++;
 
-      for (int j = 0; history[pos][j]; j++) {
+      for (int j = 0; history[pos][j];
+           j++) { // print each word in history entry
         fprintf(stream, "%s ", history[pos][j]);
       }
       fprintf(stream, "\n");
