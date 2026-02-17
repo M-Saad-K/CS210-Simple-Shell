@@ -6,21 +6,23 @@
 #include <string.h>
 #include <unistd.h>
 
+// 2D array of up to 20 previous inputs
 char *history[HIST_LEN][INPUT_LEN];
-int head = 0;
+int head = 0; // index of array that the next input will be written to
 
 int check_hist(char *tokens[INPUT_LEN]) {
-  if (!tokens[0]) {
+  if (!tokens[0]) { // If input is empty
     return 1;
   }
 
+  // If input is history invocation
   if (tokens[0][0] == '!') {
-    if (tokens[1]) {
+    if (tokens[1]) { // arguments to history invocation not allowed
       printf("History commands don't take arguments!\n");
       return 1;
     }
 
-    // Determint history number entered
+    // Determine index in array to load from
     int pos;
     if (tokens[0][1] == '!') { // If !! entered
       pos = (HIST_LEN + head - 1) % HIST_LEN;
