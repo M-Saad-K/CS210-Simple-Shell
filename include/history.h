@@ -1,6 +1,6 @@
 //history header file
 //decleartion of all the methods
-#inlcude <stdio.h>
+#include <stdio.h>
 #include "../include/input.h"
 
 #define HIST_LEN 20
