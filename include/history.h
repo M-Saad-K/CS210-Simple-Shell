@@ -2,7 +2,7 @@
 //decleartion of all the methods
 
 
-#define HIST_LEN 4
+#define HIST_LEN 20
 
 //Check if a history command prompt has been entered
 int check_history(char* tokens[INPUT_LEN]);

@@ -71,7 +71,6 @@ int check_history(char* tokens[INPUT_LEN]){
                                   printf("History call does not exits!\n");
                                   return 1;
                           }
-		printf("POS IS: %d\n", pos);
 
 		//at this point, if the command isn't a history prompt then it will have returned to main
 		//if it is a history prompt, then the maths above has worked out the value to call
