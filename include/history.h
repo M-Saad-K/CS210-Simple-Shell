@@ -1,7 +1,8 @@
 //history header file
 //decleartion of all the methods
-
+#inlcude <stdio.h>
 #include "../include/input.h"
+
 #define HIST_LEN 20
 
 // Checks if the input was a history invocation, and insert appropriate item.
