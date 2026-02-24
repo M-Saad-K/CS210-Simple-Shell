@@ -50,7 +50,7 @@ int main(void) {
     while (check_alias(tokens)) { // insert all aliases
     }
 
-    if (!check_hist(tokens)) {
+    if (!check_history(tokens)) {
       if (!check_builtin(tokens)) {
         print_tokens(tokens);
         run(tokens);
