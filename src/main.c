@@ -1,3 +1,4 @@
+#include "../include/alias.h"
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/execute.h"
@@ -37,15 +38,20 @@ int main(void) {
   getcwd(cwd, 100);
   printf("New HOME: %s\n", cwd);
 
+  load_hist();
+  load_aliases();
+
   char input_buffer[INPUT_LEN]; // Buffer for user input
   char *tokens[INPUT_LEN];      // Pointers to each token in buffer
   clear(tokens); // Clears data left over from previous run which causes errors
 
   while (get_input(input_buffer, tokens)) {
-    // print_tokens(tokens); // Uncomment for debugging
+    while (check_alias(tokens)) { // insert all aliases
+    }
 
     if (!check_hist(tokens)) {
       if (!check_builtin(tokens)) {
+        print_tokens(tokens);
         run(tokens);
       }
     }
@@ -58,5 +64,7 @@ int main(void) {
   setpath(saved_path);
   free(saved_path[1]);
   printf("Restored path: %s\n", getenv("PATH"));
+  save_hist();
+  save_aliases();
   free_hist();
 }
