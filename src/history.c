@@ -140,7 +140,7 @@ void load_hist() {
   if (hist_file) { // check that .hist_list exists
     while (fgets(buffer, INPUT_LEN, hist_file)) {
       tokenize(buffer + 4, tokens); // +4 to skip the number
-      add_hist(tokens);
+      history_add(tokens);
       clear(tokens);
     }
     fclose(hist_file);
