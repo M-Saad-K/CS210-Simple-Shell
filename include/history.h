@@ -13,5 +13,8 @@ void history_add(char* tokens[INPUT_LEN]);
 //free the malloced memory at the end when exit character entered
 void free_hist();
 
+//print the history when 'history' is entered to the command line
+void print_history();
+
 
 

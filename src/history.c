@@ -5,12 +5,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-//array that stores all our history
-//2D array, each row represents a hist_len
+//2D array, each row represents an input to the command line
 char *history[HIST_LEN][INPUT_LEN]; 	//the command line, each part of this array points to a string (token)  
+int head = 0;				//next available spot in the array
 
-//the current head of the struct... ie like an index counter
-int head = 0;				
 
 //This method will be called when the input has been tokenised
 //it's goal is to check that a history prompt has been entered and then execute the command
@@ -54,7 +52,11 @@ int check_history(char* tokens[INPUT_LEN]){
 
 			//positie case
       			if (num > 0) {
-        			pos =(num - 1) % HIST_LEN;
+				//if overflow has occured
+				//error as when full first time then this causes issues
+				if (history[head][0]) {
+					pos = (head + num -1 ) % HIST_LEN; //TODO: Error with this line
+				} else pos = num-1; //no overflow
       			} 
 			//negative case
 			else {
@@ -62,14 +64,14 @@ int check_history(char* tokens[INPUT_LEN]){
       			}	
 		}
 
-			  printf("pos check: %d\n", pos);
 		          //ensure that this position exists in the array
+
                           //this would cause an error
                           if (!(history[pos][0])) {
                                   printf("History call does not exits!\n");
                                   return 1;
                           }
-
+		printf("POS IS: %d\n", pos);
 
 		//at this point, if the command isn't a history prompt then it will have returned to main
 		//if it is a history prompt, then the maths above has worked out the value to call
@@ -120,6 +122,7 @@ void free_hist() {
 	for (int i = 0; i< HIST_LEN; i++) {
 		for (int j= 0; history[i][j]; j++) {
 			free(history[i][j]);
+			history[i][j] = NULL;
 		}
 	}
 }
