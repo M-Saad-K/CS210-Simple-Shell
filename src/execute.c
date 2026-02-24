@@ -20,7 +20,6 @@ int run(char *input[INPUT_LEN]) {
     // Child proccess
     if (execvp(input[0], input) == -1) {
       // If this point reached, an error occured in exec
-      int n = errno; // get error number of exec function
 
       perror(input[0]);
       exit(1);
