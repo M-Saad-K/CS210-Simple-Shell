@@ -4,7 +4,7 @@
 
 ## AUTHORS
 * Callum Charteris
-* Duncun Amundrund
+* Duncun Amundrud
 * Finlay Robb
 * Luke Wallace
 * Muhammad Saad Khan 

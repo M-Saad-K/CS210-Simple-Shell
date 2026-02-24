@@ -1,14 +1,18 @@
 #include "../include/builtin.h"
+#include "../include/alias.h"
 #include "../include/env.h"
+#include "../include/history.h"
 #include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-const int num = 3;
-const char *names[] = {"getpath", "setpath", "cd"};
-int (*funcs[])(char **) = {&getpath, &setpath, &cd};
+const int num = 6;
+const char *names[] = {"getpath", "setpath", "cd",
+                       "history", "alias",   "aliases"};
+int (*funcs[])(char **) = {&getpath,       &setpath,   &cd,
+                           &print_history, &new_alias, &print_aliases};
 
 int check_builtin(char *input[INPUT_LEN]) {
   if (!input[0]) {
@@ -53,5 +57,21 @@ int cd(char *input[INPUT_LEN]) {
     perror("cd");
     return 1;
   }
+  return 0;
+}
+
+int print_history(char *input[INPUT_LEN]) {
+  output_hist(stdout);
+  return 0;
+}
+
+int new_alias(char *input[INPUT_LEN]) {
+  add_alias(input);
+  printf("Alias %s saved!\n", input[1]);
+  return 0;
+}
+
+int print_aliases(char *input[INPUT_LEN]) {
+  output_aliases(stdout);
   return 0;
 }
