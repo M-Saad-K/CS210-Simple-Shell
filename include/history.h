@@ -1,18 +1,18 @@
-//history header file
-//decleartion of all the methods
-#include <stdio.h>
+// history header file
+// decleartion of all the methods
 #include "../include/input.h"
+#include <stdio.h>
 
 #define HIST_LEN 20
 
 // Checks if the input was a history invocation, and insert appropriate item.
-//Check if a history command prompt has been entered
-int check_history(char* tokens[INPUT_LEN]);
+// Check if a history command prompt has been entered
+int check_history(char *tokens[INPUT_LEN]);
 
-//if not history, add current command to the history and then execute
-void history_add(char* tokens[INPUT_LEN]);
+// if not history, add current command to the history and then execute
+void history_add(char *tokens[INPUT_LEN]);
 
-//free the malloced memory at the end when exit character entered
+// free the malloced memory at the end when exit character entered
 void free_hist();
 
 // Print the history in order from oldest to newest to specified stream
