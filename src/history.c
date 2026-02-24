@@ -1,4 +1,5 @@
 #include "../include/history.h"
+#include "../include/env.h"
 #include "../include/input.h"
 #include <stdio.h>
 #include <stdlib.h>
