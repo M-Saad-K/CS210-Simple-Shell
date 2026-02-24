@@ -7,7 +7,7 @@
 // 2D array, each row represents an input to the command line
 char *history[HIST_LEN][INPUT_LEN]; // the command line, each part of this array
                                     // points to a string (token)
-int head = 0; // next available spot in the array
+int head = 0;                       // next available spot in the array
 
 // This method will be called when the input has been tokenised
 // it's goal is to check that a history prompt has been entered and then execute
