@@ -104,7 +104,7 @@ void history_add(char *tokens[INPUT_LEN]) {
 
   // if circular occurs then have to free the element leaving the array of
   // structs
-  for (int i; history[head][i]; i++) {
+  for (int i = 0; history[head][i]; i++) {
     free(history[head][i]);
     history[head][i] = NULL;
   }
@@ -142,8 +142,8 @@ void output_hist(FILE *stream) {
 
 void load_hist() {
   set_home();
-  char buffer[INPUT_LEN];  // buffer for each line to be read to from file
-  char *tokens[INPUT_LEN]; // pointers to each token in the buffer
+  char buffer[INPUT_LEN + 4]; // buffer for each line to be read to from file
+  char *tokens[INPUT_LEN];    // pointers to each token in the buffer
   FILE *hist_file = fopen(".hist_list", "r");
   if (hist_file) { // check that .hist_list exists
     while (fgets(buffer, INPUT_LEN, hist_file)) {

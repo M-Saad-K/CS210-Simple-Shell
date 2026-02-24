@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#define UNUSED(x) (void)(x)
 
 const int num = 6;
 const char *names[] = {"getpath", "setpath", "cd",
@@ -61,6 +62,7 @@ int cd(char *input[INPUT_LEN]) {
 }
 
 int print_history(char *input[INPUT_LEN]) {
+  UNUSED(input);
   output_hist(stdout);
   return 0;
 }
@@ -72,6 +74,7 @@ int new_alias(char *input[INPUT_LEN]) {
 }
 
 int print_aliases(char *input[INPUT_LEN]) {
+  UNUSED(input);
   output_aliases(stdout);
   return 0;
 }

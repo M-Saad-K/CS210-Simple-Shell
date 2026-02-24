@@ -1,4 +1,5 @@
 #include "../include/builtin.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -12,5 +13,7 @@ char *save_path() {
 
 void set_home() {
   char *home = getenv("HOME");
-  chdir(home);
+  if (chdir(home) != 0) {
+    perror("Error: ");
+  };
 }
