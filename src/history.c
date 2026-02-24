@@ -1,83 +1,118 @@
-#include "../include/history.h"
-#include "../include/env.h"
 #include "../include/input.h"
+#include "../include/history.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <stdlib.h>
 
-// 2D array of up to 20 previous inputs
-char *history[HIST_LEN][INPUT_LEN];
-int head = 0; // index of array that the next input will be written to
+//2D array, each row represents an input to the command line
+char *history[HIST_LEN][INPUT_LEN]; 	//the command line, each part of this array points to a string (token)  
+int head = 0;				//next available spot in the array
 
-int check_hist(char *tokens[INPUT_LEN]) {
-  if (!tokens[0]) { // If input is empty
-    return 1;
-  }
 
-  // If input is history invocation
-  if (tokens[0][0] == '!') {
-    if (tokens[1]) { // arguments to history invocation not allowed
-      printf("History commands don't take arguments!\n");
-      return 1;
-    }
+//This method will be called when the input has been tokenised
+//it's goal is to check that a history prompt has been entered and then execute the command
+int check_history(char* tokens[INPUT_LEN]){
 
-    // Determine index in array to load from based on input number
-    int index;
-    if (tokens[0][1] == '!') {                  // If !! entered
-      index = (HIST_LEN + head - 1) % HIST_LEN; // Load most recent history item
-    } else {
-      char num_s[4];
-      strncpy(num_s, tokens[0] + 1, 3); // get number after !
-      int num = atoi(num_s);            // convert number to int
+	//if no commands, then just return
+	//if they have entered an empty input, no need to check as invalid
+	if (!tokens[0]) {
+		return 1;
+	}
 
-      if (num < -HIST_LEN || num > HIST_LEN) { // If number out of range
-        printf("History index must be from -%d to %d!\n", HIST_LEN, HIST_LEN);
-        return 1;
-      }
-      if (num > 0) { // If positive number entered
-        if (history[head][0]) {
-          index = (head + num - 1) % HIST_LEN; // if overflow has happened
-        } else {
-          index = num - 1; // if array not overflowed
-        }
-      } else if (num < 0) { // if negative number entered
-        index = (HIST_LEN + head + num) % HIST_LEN; // for negative number
-      } else {                                      // If 0 or nothing entered
-        printf("0 is not a valid history index!\n");
-        return 1;
-      }
-    }
-    if (history[index][0] == NULL) { // check the history item exists
-      printf("Invalid history entry!\n");
-      return 1;
-    }
+	//check the first token is !- first sign of a valid history command
+	if (tokens[0][0] == '!') {
+		//history doesn't take parameters- invalid history prompt
+		if (tokens[1]) {
+			printf("History doesn't take parameters!\n");
+			return 1; 
+		}
+		
+		//at this point, the command is at least valid whether history prompt or normal command line
+    		int pos;	
+		if (tokens[0][1] == '!') { // If !! entered
+      			pos = (HIST_LEN + head -1) % HIST_LEN; 
+    		} else {
 
-    // Subsitute chosen history element into tokens input
-    for (int i = 0; history[index][i]; i++) {
-      tokens[i] = history[index][i];
-    }
-    return 0;
-  }
+			//this code below generates either a positive integer or a negative, deependent on call
+      			char num_s[4];
+      			strncpy(num_s, tokens[0] + 1, 3);
+      			int num = atoi(num_s);
+			
 
-  add_hist(tokens); // If command was not history invocation add it to history
-  return 0;
+			//boundary checking
+			//need to include boundary checking for negative num as can't access negative index
+      			if (num <= -HIST_LEN || num > HIST_LEN ||num == 0) {
+        		printf("You can only call to the last 20 commands!\n"); // TODO: Improve this message
+        		return 1;
+      			}
+
+			//calculate the correct position
+			//issue with this maths need to fix it to work circular
+
+			//positie case
+      			if (num > 0) {
+				//if overflow has occured
+				//error as when full first time then this causes issues
+				if (history[head][0]) {
+					pos = (head + num -1 ) % HIST_LEN; //TODO: Error with this line
+				} else pos = num-1; //no overflow
+      			} 
+			//negative case
+			else {
+        			pos = (HIST_LEN + head + num-1) % HIST_LEN;
+      			}	
+		}
+
+		          //ensure that this position exists in the array
+
+                          //this would cause an error
+                          if (!(history[pos][0])) {
+                                  printf("History call does not exits!\n");
+                                  return 1;
+                          }
+
+		//at this point, if the command isn't a history prompt then it will have returned to main
+		//if it is a history prompt, then the maths above has worked out the value to call
+
+		//at this point, we are ready to interpret the command after Finlay's mathematical expertise
+		// Subsitute history element into tokens input
+		//this is making tokens[i] point the malloced strings in the corrosponding array
+    		for (int i = 0; history[pos][i]; i++) {
+			tokens[i] = history[pos][i];
+		}
+		
+		//at this point now, tokens conatins the executeable history command
+    		return 0;
+
+	}
+	//if we get here, the command line should be added to the array
+	history_add(tokens);
+	return 0;  
 }
 
-void add_hist(char *input[INPUT_LEN]) {
-  // Remove old history item if present
-  for (int i = 0; history[head][i]; i++) {
-    free(history[head][i]);
-    history[head][i] = NULL;
-  }
-  // malloc space for each token in input, then copy it into history
-  for (int i = 0; input[i]; i++) {
-    history[head][i] = malloc((strlen(input[i]) + 1) * sizeof(char));
-    strcpy(history[head][i], input[i]);
-  }
+//This method is called when no history call has been made from the command line
+void history_add(char* tokens[INPUT_LEN]) {
 
-  // Move head forwards
-  head = (head + 1) % HIST_LEN;
+	//if circular occurs then have to free the element leaving the array of structs	
+	for (int i; history[head][i]; i++) {
+		free(history[head][i]);
+		history[head][i] = NULL;
+	}
+
+	//now we have freed position, need to add the current token input to history
+         //current format- array of pointers to strings
+         //malloc new space
+         //repeat until tokens hit null
+         for (int i = 0; tokens[i]; i++) {
+                 //here, you will have a current token
+                 history[head][i] = malloc((strlen(tokens[i]) + 1) * sizeof(char));
+                 strcpy(history[head][i], tokens[i]);
+         }
+
+	//head- next available position... circular implementation
+	head = (head + 1) % HIST_LEN;
+	
 }
 
 void output_hist(FILE *stream) {
@@ -105,7 +140,7 @@ void load_hist() {
   if (hist_file) { // check that .hist_list exists
     while (fgets(buffer, INPUT_LEN, hist_file)) {
       tokenize(buffer + 4, tokens); // +4 to skip the number
-      add_hist(tokens);
+      history_add(tokens);
       clear(tokens);
     }
     fclose(hist_file);
@@ -119,11 +154,13 @@ void save_hist() {
   fclose(hist_file);
 }
 
+//frees history when an exit command has been entered to the terminal
+//gets access to the array as it's a global variable
 void free_hist() {
-  for (int i = 0; i < HIST_LEN; i++) {
-    for (int j = 0; history[i][j]; j++) {
-      free(history[i][j]);
-      history[i][j] = NULL;
-    }
-  }
+	for (int i = 0; i< HIST_LEN; i++) {
+		for (int j= 0; history[i][j]; j++) {
+			free(history[i][j]);
+			history[i][j] = NULL;
+		}
+	}
 }
