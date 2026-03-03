@@ -1,10 +1,10 @@
 #include "../include/alias.h"
+#include "../include/ascii_art.h"
 #include "../include/builtin.h"
 #include "../include/env.h"
 #include "../include/execute.h"
 #include "../include/history.h"
 #include "../include/input.h"
-#include "../include/ascii_art.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
