@@ -6,22 +6,53 @@
 
 const char delimiters[] = " \t\n|><&;";
 
-int get_input(char *input_buffer, char *output[INPUT_LEN]) {
-  // Formatting for prompt
-  printf("%s: ", getenv("USER"));
+void print_prompt() {
   char cwd[100];
-  if (getcwd(cwd, 100)) {   // Getting current directory
-    printf("%s --> ", cwd); // Prints prompt
-  }
-  fflush(stdout); // Fix for prompt not printing correctly
+  getcwd(cwd, 100);
 
+  printf(BLUE_FG "" BLACK_FG BLUE_BG "%s" RESET, getenv("USER"));
+  printf(BLUE_FG ORANGE_BG "" RESET ORANGE_BG "%s" ORANGE_FG BLACK_BG "",
+         cwd);
+
+  fflush(stdout); // Fix for prompt not printing correctly
+}
+
+void print_flashing_cursor() {
+  printf(PURPLE_BG BLACK_FG BLINK "" PURPLE_FG BLACK_BG "" RESET " ");
+  fflush(stdout); // Fix for prompt not printing correctly
+}
+
+void stop_flashing_cursor(char *tokens[INPUT_LEN]) {
+  printf("\33[A\33[2K\r");
+  print_prompt();
+
+  printf(PURPLE_BG BLACK_FG "" PURPLE_FG BLACK_BG "" RESET " ");
+  if (!tokens) {
+    return;
+  }
+  for (int i = 0; tokens[i]; i++) {
+    printf("%s ", tokens[i]);
+  }
+  printf("\n");
+
+  fflush(stdout); // Fix for prompt not printing correctly
+}
+
+int get_input(char *input_buffer, char *output[INPUT_LEN]) {
+  printf("\n"); // Can't put this in print_prompt or lines will be double spaced
+  print_prompt();
+  print_flashing_cursor();
   char *ret = fgets(input_buffer, INPUT_LEN, stdin);
+
   // Exit if CTR-d pressed
   if (!ret) {
+    printf("\n");
+    stop_flashing_cursor(NULL);
     return 0;
   }
 
   tokenize(input_buffer, output);
+  stop_flashing_cursor(output);
   // If input is empty
   if (!*output) {
     return 1;
@@ -42,7 +73,7 @@ int tokenize(char input[INPUT_LEN], char *output[INPUT_LEN]) {
     output[i] = token;
     token = strtok_r(input, delimiters, &input);
   }
-  return 0;
+  return 1;
 }
 
 int clear(char *array[INPUT_LEN]) {
